@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if [[ $_omb_upgrade_reload_bashrc ]]; then
+  # We skip the upgrade check if it is attempted while reloading .bashrc after
+  # upgrading OMB.
+  return 0
+fi
+
 function _omb_upgrade_current_epoch {
   local sec=${EPOCHSECONDS-}
   [[ $sec ]] || printf -v sec '%(%s)T' -1 2>/dev/null || sec=$(command date +%s)
@@ -49,7 +55,7 @@ function _omb_upgrade_check {
 # Cancel upgrade if git is unavailable on the system
 type -P git &>/dev/null || return 0
 
-if command mkdir "$OSH/log/update.lock" 2>/dev/null; then
+if command mkdir -p "$OSH/log/update.lock" 2>/dev/null; then
   _omb_upgrade_check
   command rmdir "$OSH"/log/update.lock
 else

@@ -33,7 +33,7 @@ fi
 # Initializes Oh My Bash
 
 # Set OSH_CUSTOM to the path where your custom config files
-# and plugins exists, or else we will use the default custom/
+# and plugins exist, or else we will use the default custom/
 if [[ ! ${OSH_CUSTOM-} ]]; then
   OSH_CUSTOM=$OSH/custom
   [[ -d $OSH_CUSTOM && -O $OSH_CUSTOM ]] ||
@@ -91,8 +91,10 @@ function _omb_module_require {
     local i
     for i in "${!files[@]}"; do
       local path=${files[i]} module=${modules[i]}
-      [[ ' '$_omb_module_loaded' ' == *" $module "* ]] && continue
-      _omb_module_loaded="$_omb_module_loaded $module"
+      if [[ $module != theme:* ]]; then
+        [[ ' '$_omb_module_loaded' ' == *" $module "* ]] && continue
+        _omb_module_loaded="$_omb_module_loaded $module"
+      fi
       source "$path" || status=$?
     done
   fi
